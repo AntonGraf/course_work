@@ -19,6 +19,10 @@ public class ExaminerServiceImpl implements ExaminerService{
     @Override
     public Collection<Question> getQuestions(int amount) {
 
+        if (amount == 0) {
+            throw new QuestionNotFoundException("Количество запрашиваемых вопросов 0");
+        }
+
         if (amount > questionService.getAll().size()) {
             throw new QuestionNotFoundException("Количество запрашиваемых вопросов больше общего количества вопросов");
         }
