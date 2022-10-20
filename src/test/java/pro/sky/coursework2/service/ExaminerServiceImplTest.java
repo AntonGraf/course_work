@@ -8,6 +8,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 import pro.sky.coursework2.entity.Question;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
@@ -21,13 +23,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ExtendWith(MockitoExtension.class)
 class ExaminerServiceImplTest {
 
-    private final Set<Question> questions = new HashSet<>();
+    private final Set<Question> javaQuestions = new HashSet<>();
+    private final Set<Question> mathQuestions = new HashSet<>();
 
     @Mock
-    private JavaQuestionService questionService;
+    private JavaQuestionService javaQuestionService;
+    @Mock
+    private MathQuestionService mathQuestionService;
 
     @InjectMocks
     private ExaminerServiceImpl out;
@@ -44,14 +50,17 @@ class ExaminerServiceImplTest {
         return Stream.of(
                 Arguments.of(0),
                 Arguments.of(89),
-                Arguments.of(5)
+                Arguments.of(8)
         );
     }
 
     @BeforeEach
     public void beforeEach() {
-        questions.clear();
-        fillTestQuestions();
+        javaQuestions.clear();
+        fillTestJavaQuestions();
+
+        mathQuestions.clear();
+        fillTestMathQuestions();
 
     }
 
@@ -59,9 +68,15 @@ class ExaminerServiceImplTest {
     @MethodSource("provideParamsTest")
     void getQuestions(int amount) {
 
-        when(questionService.getAll()).thenReturn(questions);
-        doAnswer(getTestRandomQuestion()).when(questionService).getRandomQuestion();
-        assertTrue(questions.containsAll(out.getQuestions(amount)));
+        when(javaQuestionService.getAll()).thenReturn(javaQuestions);
+        when(mathQuestionService.getAll()).thenReturn(mathQuestions);
+        doAnswer(getTestRandomJavaQuestion()).when(javaQuestionService).getRandomQuestion();
+        doAnswer(getTestRandomMathQuestion()).when(mathQuestionService).getRandomQuestion();
+
+        for (Question question : out.getQuestions(amount)) {
+            assertTrue(javaQuestions.contains(question) || mathQuestions.contains(question));
+        }
+
         assertEquals(out.getQuestions(amount).size(), amount);
 
     }
@@ -73,17 +88,35 @@ class ExaminerServiceImplTest {
     }
 
 
-    public void fillTestQuestions() {
-        questions.addAll( Set.of(
+    public void fillTestJavaQuestions() {
+        javaQuestions.addAll( Set.of(
                 new Question("Что такое объект","Объект - это "),
                 new Question("Что такое класс","Класс - это "),
                 new Question("Что такое интерфейс","Интерфейс - это "),
                 new Question("Что такое инкапсуляция","Инкапсуляция - это ")
+
         ));
     }
 
-    public Answer<Question> getTestRandomQuestion() {
+    public void fillTestMathQuestions() {
+        mathQuestions.addAll( Set.of(
+                new Question("2 + 2","4"),
+                new Question("2 * 2","4"),
+                new Question("2 ^ 2","4"),
+                new Question("2 / 2","1")
+
+        ));
+    }
+
+    public Answer<Question> getTestRandomJavaQuestion() {
         Random random = new Random();
-        return invocationOnMock -> questions.toArray(new Question[0])[random.nextInt(questions.size())];
+        return invocationOnMock -> javaQuestions.toArray(new Question[0])[random.nextInt(javaQuestions.size())];
+
+    }
+
+    public Answer<Question> getTestRandomMathQuestion() {
+        Random random = new Random();
+        return invocationOnMock -> mathQuestions.toArray(new Question[0])[random.nextInt(mathQuestions.size())];
+
     }
 }
