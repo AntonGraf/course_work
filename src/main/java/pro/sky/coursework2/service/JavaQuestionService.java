@@ -15,6 +15,10 @@ public class JavaQuestionService implements QuestionService{
 
     Set<Question> questions;
 
+    public JavaQuestionService() {
+        questions = new HashSet<>();
+    }
+
     @Override
     public Question add(String question, String answer) {
         return add(new Question(question, answer));
@@ -22,10 +26,6 @@ public class JavaQuestionService implements QuestionService{
 
     @Override
     public Question add(Question question) {
-
-        if (questions == null) {
-            questions = new HashSet<>();
-        }
 
         if (questions.contains(question)) {
             throw new QuestionAddedException("Вопрос \"" + question.getQuestion() + "\" уже есть в списке");
@@ -56,7 +56,7 @@ public class JavaQuestionService implements QuestionService{
     @Override
     public Question getRandomQuestion() {
 
-        if (questions == null || questions.size() == 0) {
+        if (questions.size() == 0) {
             throw new QuestionNotFoundException("Список вопросов пуст.");
         }
 
