@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import pro.sky.coursework2.entity.JavaQuestionRepository;
 import pro.sky.coursework2.entity.Question;
+import pro.sky.coursework2.entity.QuestionRepository;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
@@ -15,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JavaQuestionServiceTest {
 
-    private static final QuestionService out = new JavaQuestionService();
+    private static final QuestionRepository questionRepository = new JavaQuestionRepository();
+    private static final QuestionService out = new JavaQuestionService(questionRepository);
 
     @BeforeEach
     void clear() {
