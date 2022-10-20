@@ -1,5 +1,6 @@
 package pro.sky.coursework2.controller;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +16,7 @@ public class JavaQuestionController {
 
     private final QuestionService questionService;
 
-    public JavaQuestionController(QuestionService questionService) {
+    public JavaQuestionController(@Qualifier("JavaQuestionService") QuestionService questionService) {
         this.questionService = questionService;
     }
 

@@ -1,5 +1,6 @@
 package pro.sky.coursework2.service;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pro.sky.coursework2.entity.Question;
 import pro.sky.coursework2.exception.QuestionAddedException;
@@ -11,6 +12,7 @@ import java.util.Random;
 import java.util.Set;
 
 @Service
+@Component("JavaQuestionService")
 public class JavaQuestionService implements QuestionService{
 
     Set<Question> questions;
