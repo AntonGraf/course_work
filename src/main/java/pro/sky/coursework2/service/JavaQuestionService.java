@@ -27,15 +27,11 @@ public class JavaQuestionService implements QuestionService{
     @Override
     public Question add(Question question) {
 
-        if (questions.contains(question)) {
-            throw new QuestionAddedException("Вопрос \"" + question.getQuestion() + "\" уже есть в списке");
+        if (questions.add(question)) {
+            return question;
+        } else {
+             throw new QuestionAddedException("Не удалось добавить вопрос \"" + question.getQuestion() + "\"");
         }
-
-        questions.add(question);
-
-        return questions.stream().findAny().orElseThrow(() -> new QuestionAddedException(
-                "Не удалось добавить вопрос \"" + question.getQuestion() + "\"")
-        );
     }
 
     @Override
