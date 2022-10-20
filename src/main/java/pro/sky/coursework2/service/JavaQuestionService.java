@@ -52,12 +52,13 @@ public class JavaQuestionService implements QuestionService{
     @Override
     public Question getRandomQuestion() {
 
-        if (questions.size() == 0) {
+        if (getAll().size() == 0) {
             throw new QuestionNotFoundException("Список вопросов пуст.");
         }
 
         Random random = new Random();
-        return (Question) questions.toArray()[random.nextInt(questions.size())];
+
+        return (Question) getAll().toArray()[random.nextInt(getAll().size())];
     }
 
 }
