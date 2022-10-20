@@ -1,32 +1,32 @@
 package pro.sky.coursework2.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pro.sky.coursework2.entity.Question;
+import pro.sky.coursework2.entity.QuestionRepository;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 @Service
 @Component("MathQuestionService")
 public class MathQuestionService implements QuestionService{
 
-    Set<Question> questions;
+    QuestionRepository questionRepository;
 
-    public MathQuestionService() {
-        questions = new HashSet<>();
+    public MathQuestionService(@Qualifier("MathQuestionRepository") QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
     }
 
     @PostConstruct
     void init() {
-        questions.add(new Question("2 + 2","4"));
-        questions.add(new Question("2 * 2","4"));
-        questions.add(new Question("2 ^ 2", "4"));
+        questionRepository.add(new Question("2 + 2","4"));
+        questionRepository.add(new Question("2 * 2","4"));
+        questionRepository.add(new Question("2 ^ 2", "4"));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MathQuestionService implements QuestionService{
     @Override
     public Question add(Question question) {
 
-        if (questions.add(question)) {
+        if (questionRepository.add(question)) {
             return question;
         } else {
             throw new QuestionAddedException("Не удалось добавить вопрос \"" + question.getQuestion() + "\"");
@@ -47,7 +47,7 @@ public class MathQuestionService implements QuestionService{
     @Override
     public Question remove(Question question) {
 
-        if (questions.remove(question)) {
+        if (questionRepository.remove(question)) {
             return question;
         } else {
             throw new QuestionNotFoundException("Не удалось удалить вопрос \"" + question.getQuestion() + "\"");
@@ -57,7 +57,7 @@ public class MathQuestionService implements QuestionService{
 
     @Override
     public Collection<Question> getAll() {
-        return questions;
+        return questionRepository.getAll();
     }
 
     @Override

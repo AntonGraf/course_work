@@ -2,9 +2,11 @@ package pro.sky.coursework2.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.coursework2.entity.MathQuestionRepository;
 import pro.sky.coursework2.entity.Question;
 import pro.sky.coursework2.entity.QuestionRepository;
@@ -15,10 +17,11 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(MockitoExtension.class)
 class MathQuestionServiceTest {
 
     private static final QuestionRepository questionRepository = new MathQuestionRepository();
-    private static final QuestionService out = new JavaQuestionService(questionRepository);
+    private static final QuestionService out = new MathQuestionService(questionRepository);
 
     @BeforeEach
     void clear() {
