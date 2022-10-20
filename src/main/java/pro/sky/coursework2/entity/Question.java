@@ -33,12 +33,12 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question1 = (Question) o;
-        return question.equals(question1.question) && answer.equals(question1.answer);
+        return question.equals(question1.question);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(question, answer);
+        return Objects.hash(question);
     }
 
     @Override

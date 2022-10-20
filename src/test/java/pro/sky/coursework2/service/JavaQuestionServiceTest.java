@@ -56,12 +56,14 @@ class JavaQuestionServiceTest {
         Question question1 = new Question("Что такое объект","Объект - это ");
         Question question2 = new Question("Что такое класс","Класс - это ");
         Question question3 = new Question("Что такое инкапсуляция", "Инкапсуляция - это ");
+        Question question4 = new Question("Что такое инкапсуляция", "Инкапсуляция - это ....");
 
         assertThrows(QuestionNotFoundException.class, () -> out.remove(question2));
 
         out.add(question1);
         out.add(question2);
         out.add(question3);
+        assertThrows(QuestionAddedException.class, () -> out.add(question4));
 
         assertEquals(out.getAll().size(), 3);
         assertEquals(out.remove(new Question("Что такое объект","Объект - это ")), question1);
