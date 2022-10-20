@@ -18,8 +18,8 @@ public class QuestionControllerAdvice {
     }
 
     @ExceptionHandler(QuestionNotFoundException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleException(QuestionNotFoundException exception) {
-        return String.format("HTTP статус -  Внутренняя ошибка сервера (КОД 500):\n <b>%s</b>\n",exception.getMessage());
+        return String.format("HTTP статус -  Не корректный запрос (КОД 400):\n <b>%s</b>\n",exception.getMessage());
     }
 }
