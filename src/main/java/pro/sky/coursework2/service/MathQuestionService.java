@@ -6,6 +6,7 @@ import pro.sky.coursework2.entity.Question;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
@@ -19,6 +20,13 @@ public class MathQuestionService implements QuestionService{
 
     public MathQuestionService() {
         questions = new HashSet<>();
+    }
+
+    @PostConstruct
+    void init() {
+        questions.add(new Question("2 + 2","4"));
+        questions.add(new Question("2 * 2","4"));
+        questions.add(new Question("2 ^ 2", "4"));
     }
 
     @Override
