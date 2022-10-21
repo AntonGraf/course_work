@@ -1,102 +1,95 @@
 package pro.sky.coursework2.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.coursework2.entity.MathQuestionRepository;
 import pro.sky.coursework2.entity.Question;
-import pro.sky.coursework2.entity.QuestionRepository;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MathQuestionServiceTest {
 
-    private static final QuestionRepository questionRepository = new MathQuestionRepository();
-    private static final QuestionService out = new MathQuestionService(questionRepository);
+    private final String QUESTION_STRING = "2 + 2";
+    private final String ANSWER = "4";
 
-    @BeforeEach
-    void clear() {
-        out.getAll().clear();
-    }
+    @Mock
+    private MathQuestionRepository questionRepository;
+    @InjectMocks
+    private MathQuestionService out;
 
-    public static Stream<Arguments> provideParamsTest() {
-        return Stream.of(
-                Arguments.of("2 + 2", "4",
-                        new Question("2 + 2", "4")),
-                Arguments.of("2 * 2", "4",
-                        new Question("2 * 2", "4")),
-                Arguments.of("2 ^ 2", "4",
-                        new Question("2 ^ 2", "4")),
-                Arguments.of("2 / 2", "1",
-                        new Question("2 / 2", "1"))
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideParamsTest")
-    void add(String question, String answer, Question excepted) {
-
+    @Test
+    public void addPositiveTest() {
+        lenient().when(questionRepository.getAll()).thenReturn(Set.of());
         assertTrue(out.getAll().isEmpty());
-        assertEquals(out.add(question, answer), excepted);
-        assertEquals(out.getRandomQuestion(), excepted);
-        assertEquals(out.getAll().size(), 1);
 
-        assertThrows(QuestionAddedException.class, () -> out.add(question, answer));
+        lenient().when(questionRepository.add(anyString(),anyString())).thenReturn(true);
+        lenient().when(questionRepository.add(any())).thenReturn(true);
+        assertEquals(out.add(QUESTION_STRING, ANSWER), new Question(QUESTION_STRING, ANSWER));
+
+        lenient().when(questionRepository.getAll()).thenReturn(Set.of(
+                new Question(QUESTION_STRING, ANSWER)
+        ));
+        assertFalse(out.getAll().isEmpty());
         assertEquals(out.getAll().size(), 1);
     }
 
     @Test
-    void remove() {
-
-        assertTrue(out.getAll().isEmpty());
-
-        Question question1 = new Question("2 + 2","4");
-        Question question2 = new Question("2 * 2","4");
-        Question question3 = new Question("2 ^ 2", "4");
-        Question question4 = new Question("2 + 2", "5");
-
-        assertThrows(QuestionNotFoundException.class, () -> out.remove(question2));
-
-        out.add(question1);
-        out.add(question2);
-        out.add(question3);
-        assertThrows(QuestionAddedException.class, () -> out.add(question4));
-
-        assertEquals(out.getAll().size(), 3);
-        assertEquals(out.remove(new Question("2 + 2","4")), question1);
-        assertEquals(out.getAll().size(), 2);
-
-        assertFalse(out.getAll().contains(question1));
-        assertTrue(out.getAll().contains(question2));
-        assertTrue(out.getAll().contains(question3));
-
-        assertThrows(QuestionNotFoundException.class, () -> out.remove(question1));
+    public void addNegativeTest() {
+        lenient().when(questionRepository.add(anyString(),anyString())).thenReturn(false);
+        lenient().when(questionRepository.add(any())).thenReturn(false);
+        assertThrows(QuestionAddedException.class, () ->out.add(QUESTION_STRING, ANSWER));
     }
 
     @Test
-    void getRandomQuestion() {
-
+    public void removePositiveTest() {
+        lenient().when(questionRepository.getAll()).thenReturn(Set.of());
         assertTrue(out.getAll().isEmpty());
 
-        assertThrows(QuestionNotFoundException.class, out::getRandomQuestion);
+        lenient().when(questionRepository.getAll()).thenReturn(Set.of(
+                new Question(QUESTION_STRING, ANSWER)
+        ));
 
-        Question question1 = new Question("2 + 2","4");
-        Question question2 = new Question("2 * 2","4");
-        Question question3 = new Question("2 ^ 2", "4");
+        lenient().when(questionRepository.remove(any())).thenReturn(true);
+        assertEquals(out.remove(new Question(QUESTION_STRING,ANSWER)),
+                new Question(QUESTION_STRING, ANSWER));
+    }
 
-        out.add(question1);
-        out.add(question2);
-        out.add(question3);
+    @Test
+    public void removeNegativeTest() {
+        lenient().when(questionRepository.remove(any())).thenReturn(false);
+        assertThrows(QuestionNotFoundException.class, () ->out.remove(new Question(QUESTION_STRING, ANSWER)));
+    }
 
-        assertTrue(out.getAll().contains(out.getRandomQuestion()));
+    @Test
+    public void getRandomQuestionPositiveTest() {
+        lenient().when(questionRepository.getAll()).thenReturn(getQuestionList());
+        assertTrue(getQuestionList().contains(out.getRandomQuestion()));
+    }
+
+    @Test void getRandomQuestionNegativeTest() {
+        lenient().when(questionRepository.getAll()).thenReturn(Set.of());
+        assertThrows(QuestionNotFoundException.class, () -> out.getRandomQuestion());
+    }
+
+    private Collection<Question> getQuestionList() {
+
+        Set<Question> questions = new HashSet<>();
+
+        questions.add(new Question("2 + 2","4"));
+        questions.add(new Question("2 * 2","4"));
+        questions.add(new Question("2 ^ 2", "4"));
+
+        return questions;
     }
 }
