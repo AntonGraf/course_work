@@ -16,14 +16,14 @@ import java.util.Random;
 @Component("MathQuestionService")
 public class MathQuestionService implements QuestionService{
 
-    QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     public MathQuestionService(@Qualifier("MathQuestionRepository") QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 
     @PostConstruct
-    void init() {
+    private void init() {
         questionRepository.add(new Question("2 + 2","4"));
         questionRepository.add(new Question("2 * 2","4"));
         questionRepository.add(new Question("2 ^ 2", "4"));

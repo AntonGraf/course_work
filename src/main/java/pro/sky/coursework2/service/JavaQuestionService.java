@@ -15,7 +15,7 @@ import java.util.Random;
 @Component("JavaQuestionService")
 public class JavaQuestionService implements QuestionService{
 
-    QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
 
     public JavaQuestionService(@Qualifier("JavaQuestionRepository") QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;

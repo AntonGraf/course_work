@@ -10,14 +10,14 @@ import java.util.Set;
 @Component("JavaQuestionRepository")
 public class JavaQuestionRepository implements QuestionRepository{
 
-    Set<Question> questions;
+    private final Set<Question> questions;
 
     public JavaQuestionRepository() {
         questions = new HashSet<>();
     }
 
     @PostConstruct
-    void init() {
+    private void init() {
         questions.add(new Question("Что такое объект","Объект - это "));
         questions.add(new Question("Что такое класс","Класс - это "));
         questions.add(new Question("Что такое инкапсуляция", "Инкапсуляция - это "));
