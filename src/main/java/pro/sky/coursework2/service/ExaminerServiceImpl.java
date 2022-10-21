@@ -29,10 +29,6 @@ public class ExaminerServiceImpl implements ExaminerService{
             throw new QuestionNotFoundException("Количество запрашиваемых вопросов 0");
         }
 
-        if (amount > (javaQuestionService.getAll().size() + mathQuestionService.getAll().size())) {
-            throw new QuestionNotFoundException("Количество запрашиваемых вопросов больше общего количества вопросов");
-        }
-
         Collection<Question> questions = new HashSet<>();
 
         while (questions.size() < amount) {

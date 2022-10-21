@@ -1,14 +1,10 @@
 package pro.sky.coursework2.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pro.sky.coursework2.entity.Question;
-import pro.sky.coursework2.entity.QuestionRepository;
-import pro.sky.coursework2.exception.QuestionAddedException;
-import pro.sky.coursework2.exception.QuestionNotFoundException;
+import pro.sky.coursework2.exception.MethodNotAllowedException;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Random;
 
@@ -16,60 +12,59 @@ import java.util.Random;
 @Component("MathQuestionService")
 public class MathQuestionService implements QuestionService{
 
-    private final QuestionRepository questionRepository;
-
-    public MathQuestionService(@Qualifier("MathQuestionRepository") QuestionRepository questionRepository) {
-        this.questionRepository = questionRepository;
-    }
-
-    @PostConstruct
-    private void init() {
-        questionRepository.add(new Question("2 + 2","4"));
-        questionRepository.add(new Question("2 * 2","4"));
-        questionRepository.add(new Question("2 ^ 2", "4"));
-    }
-
     @Override
     public Question add(String question, String answer) {
-        return add(new Question(question, answer));
+        throw new MethodNotAllowedException("Method Not Allowed");
     }
 
     @Override
     public Question add(Question question) {
-
-        if (questionRepository.add(question)) {
-            return question;
-        } else {
-            throw new QuestionAddedException("Не удалось добавить вопрос \"" + question.getQuestion() + "\"");
-        }
+        throw new MethodNotAllowedException("Method Not Allowed");
     }
 
     @Override
     public Question remove(Question question) {
-
-        if (questionRepository.remove(question)) {
-            return question;
-        } else {
-            throw new QuestionNotFoundException("Не удалось удалить вопрос \"" + question.getQuestion() + "\"");
-        }
-
+        throw new MethodNotAllowedException("Method Not Allowed");
     }
 
     @Override
     public Collection<Question> getAll() {
-        return questionRepository.getAll();
+        throw new MethodNotAllowedException("Method Not Allowed");
     }
 
     @Override
     public Question getRandomQuestion() {
 
-        if (getAll().size() == 0) {
-            throw new QuestionNotFoundException("Список вопросов пуст.");
-        }
-
         Random random = new Random();
-
-        return (Question) getAll().toArray()[random.nextInt(getAll().size())];
+        String question = random.nextInt(20) + getMathOperation() + random.nextInt(20);
+        String answer = getAnswer(question);
+        return new Question(question, answer);
 
     }
+
+    private String getMathOperation() {
+        Random random = new Random();
+
+        switch (random.nextInt(5)) {
+            case 1: return " - ";
+            case 2: return " * ";
+            case 3: return " / ";
+            case 4: return " ^ ";
+            default: return " + ";
+        }
+    }
+
+    private String getAnswer(String question) {
+
+        String[] strings = question.split(" ");
+        switch (strings[1]) {
+            case "-": return String.valueOf(Integer.parseInt(strings[0]) - Integer.parseInt(strings[2]));
+            case "*": return String.valueOf(Integer.parseInt(strings[0]) * Integer.parseInt(strings[2]));
+            case "/": return String.valueOf(Integer.parseInt(strings[0]) / Integer.parseInt(strings[2]));
+            case "^": return String.valueOf(Math.pow(Integer.parseInt(strings[0]),Integer.parseInt(strings[2])));
+            default: return String.valueOf(Integer.parseInt(strings[0]) + Integer.parseInt(strings[2]));
+        }
+    }
+
+
 }
