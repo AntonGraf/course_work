@@ -8,8 +8,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.coursework2.entity.JavaQuestionRepository;
 import pro.sky.coursework2.entity.Question;
+import pro.sky.coursework2.entity.QuestionRepository;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
@@ -29,7 +29,7 @@ class JavaQuestionServiceTest {
     private static final String QUESTION_STRING = "Что такое объект";
     private static final String ANSWER = "Объект - это ";
     @Mock
-    private JavaQuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
     @InjectMocks
     private JavaQuestionService out;
 

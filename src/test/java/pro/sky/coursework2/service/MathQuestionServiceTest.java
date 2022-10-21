@@ -5,8 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pro.sky.coursework2.entity.MathQuestionRepository;
 import pro.sky.coursework2.entity.Question;
+import pro.sky.coursework2.entity.QuestionRepository;
 import pro.sky.coursework2.exception.QuestionAddedException;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
@@ -24,7 +24,7 @@ class MathQuestionServiceTest {
     private final String ANSWER = "4";
 
     @Mock
-    private MathQuestionRepository questionRepository;
+    private QuestionRepository questionRepository;
     @InjectMocks
     private MathQuestionService out;
 
