@@ -7,22 +7,21 @@ import pro.sky.coursework2.exception.QuestionNotFoundException;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService{
 
-    QuestionService javaQuestionService;
-    QuestionService mathQuestionService;
+    Map<String, QuestionService> questionServiceMap;
 
-    public ExaminerServiceImpl(@Qualifier("JavaQuestionService") QuestionService javaQuestionService,
-                               @Qualifier("MathQuestionService") QuestionService mathQuestionService) {
-        this.javaQuestionService = javaQuestionService;
-        this.mathQuestionService = mathQuestionService;
+    public ExaminerServiceImpl(Map<String, QuestionService> questionServiceMap) {
+        this.questionServiceMap = questionServiceMap;
     }
 
     @Override
     public Collection<Question> getQuestions(int amount) {
+
         Random random = new Random();
 
         if (amount == 0) {
@@ -32,13 +31,8 @@ public class ExaminerServiceImpl implements ExaminerService{
         Collection<Question> questions = new HashSet<>();
 
         while (questions.size() < amount) {
-
-            if (random.nextBoolean()) {
-                questions.add(javaQuestionService.getRandomQuestion());
-            } else {
-                questions.add(mathQuestionService.getRandomQuestion());
-            }
-
+            questions.add(questionServiceMap.values().toArray(
+                    new QuestionService[0])[random.nextInt(questionServiceMap.size())].getRandomQuestion());
         }
 
         return questions;
