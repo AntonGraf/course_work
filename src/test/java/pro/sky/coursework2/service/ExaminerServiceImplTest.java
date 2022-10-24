@@ -1,6 +1,7 @@
 package pro.sky.coursework2.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,9 +15,7 @@ import org.mockito.stubbing.Answer;
 import pro.sky.coursework2.entity.Question;
 import pro.sky.coursework2.exception.QuestionNotFoundException;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,9 +33,9 @@ class ExaminerServiceImplTest {
     private JavaQuestionService javaQuestionService;
     @Mock
     private MathQuestionService mathQuestionService;
-
     @InjectMocks
-    private ExaminerServiceImpl out;
+    private HashMap<String,QuestionService> questionServiceMap = new HashMap<>();
+    private final ExaminerServiceImpl out = new ExaminerServiceImpl(questionServiceMap);
 
     public static Stream<Arguments> provideParamsTest() {
         return Stream.of(
@@ -46,19 +45,12 @@ class ExaminerServiceImplTest {
         );
     }
 
-    public static Stream<Arguments> provideParamsNegativeTest() {
-        return Stream.of(
-                Arguments.of(0),
-                Arguments.of(89),
-                Arguments.of(8)
-        );
-    }
-
     @BeforeEach
     public void beforeEach() {
+        questionServiceMap.put("JavaQuestionService", javaQuestionService);
+        questionServiceMap.put("MathQuestionService", mathQuestionService);
         javaQuestions.clear();
         fillTestJavaQuestions();
-
         mathQuestions.clear();
         fillTestMathQuestions();
 
@@ -68,10 +60,8 @@ class ExaminerServiceImplTest {
     @MethodSource("provideParamsTest")
     void getQuestions(int amount) {
 
-        when(javaQuestionService.getAll()).thenReturn(javaQuestions);
-        when(mathQuestionService.getAll()).thenReturn(mathQuestions);
-        doAnswer(getTestRandomJavaQuestion()).when(javaQuestionService).getRandomQuestion();
-        doAnswer(getTestRandomMathQuestion()).when(mathQuestionService).getRandomQuestion();
+        doAnswer(getTestRandomJavaQuestion()).when(questionServiceMap.get("JavaQuestionService")).getRandomQuestion();
+        doAnswer(getTestRandomMathQuestion()).when(questionServiceMap.get("MathQuestionService")).getRandomQuestion();
 
         for (Question question : out.getQuestions(amount)) {
             assertTrue(javaQuestions.contains(question) || mathQuestions.contains(question));
@@ -81,10 +71,9 @@ class ExaminerServiceImplTest {
 
     }
 
-    @ParameterizedTest
-    @MethodSource("provideParamsNegativeTest")
-    void getQuestionsNegative(int amount) {
-        assertThrows(QuestionNotFoundException.class, () -> out.getQuestions(amount));
+    @Test
+    void getQuestionsNegative() {
+        assertThrows(QuestionNotFoundException.class, () -> out.getQuestions(0));
     }
 
 
