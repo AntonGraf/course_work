@@ -8,8 +8,7 @@ import pro.sky.coursework2.exception.MethodNotAllowedException;
 import java.util.Collection;
 import java.util.Random;
 
-@Service
-@Component("MathQuestionService")
+@Service("MathQuestionService")
 public class MathQuestionService implements QuestionService{
 
     @Override

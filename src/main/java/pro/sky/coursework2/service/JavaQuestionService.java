@@ -11,8 +11,7 @@ import pro.sky.coursework2.exception.QuestionNotFoundException;
 import java.util.Collection;
 import java.util.Random;
 
-@Service
-@Component("JavaQuestionService")
+@Service("JavaQuestionService")
 public class JavaQuestionService implements QuestionService{
 
     private final QuestionRepository questionRepository;
